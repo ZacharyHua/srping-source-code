@@ -56,6 +56,7 @@ import org.springframework.lang.Nullable;
  * @author Rob Harrop
  * @since 1.1.2
  */
+// 断言实用程序类，它有助于验证参数。
 public abstract class Assert {
 
 	/**
@@ -68,6 +69,7 @@ public abstract class Assert {
 	 * @param message the exception message to use if the assertion fails
 	 * @throws IllegalStateException if {@code expression} is {@code false}
 	 */
+	// 断言布尔表达式，如果表达式求值为{@code false}，则抛出{@code IllegalStateException}。
 	public static void state(boolean expression, String message) {
 		if (!expression) {
 			throw new IllegalStateException(message);
@@ -89,6 +91,7 @@ public abstract class Assert {
 	 * @throws IllegalStateException if {@code expression} is {@code false}
 	 * @since 5.0
 	 */
+	// 断言布尔表达式，如果表达式求值为{@code false}，则抛出{@code IllegalStateException}。
 	public static void state(boolean expression, Supplier<String> messageSupplier) {
 		if (!expression) {
 			throw new IllegalStateException(nullSafeGet(messageSupplier));
@@ -100,9 +103,10 @@ public abstract class Assert {
 	 * if the expression evaluates to {@code false}.
 	 * @deprecated as of 4.3.7, in favor of {@link #state(boolean, String)}
 	 */
+	// 断言布尔表达式，如果表达式求值为{@code false}，则抛出{@code IllegalStateException}。
 	@Deprecated
 	public static void state(boolean expression) {
-		state(expression, "[Assertion failed] - this state invariant must be true");
+			state(expression, "[Assertion failed] - this state invariant must be true");
 	}
 
 	/**
@@ -113,6 +117,7 @@ public abstract class Assert {
 	 * @param message the exception message to use if the assertion fails
 	 * @throws IllegalArgumentException if {@code expression} is {@code false}
 	 */
+	// 断言布尔表达式，如果表达式求值为{@code false}，则抛出{@code IllegalArgumentException}。
 	public static void isTrue(boolean expression, String message) {
 		if (!expression) {
 			throw new IllegalArgumentException(message);
@@ -131,6 +136,7 @@ public abstract class Assert {
 	 * @throws IllegalArgumentException if {@code expression} is {@code false}
 	 * @since 5.0
 	 */
+	// 断言布尔表达式，如果表达式求值为{@code false}，则抛出{@code IllegalArgumentException}。
 	public static void isTrue(boolean expression, Supplier<String> messageSupplier) {
 		if (!expression) {
 			throw new IllegalArgumentException(nullSafeGet(messageSupplier));

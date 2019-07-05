@@ -149,13 +149,15 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	private String serializationId;
 
 	/** Whether to allow re-registration of a different definition with the same name. */
+	// 是否允许使用相同名称重新注册不同的定义
 	private boolean allowBeanDefinitionOverriding = true;
 
 	/** Whether to allow eager class loading even for lazy-init beans. */
-	// 是否允许使用相同名称重新注册不同的定义。
+	// 是否允许eager类加载，即使对于lazy-init bean也是如此
 	private boolean allowEagerClassLoading = true;
 
 	/** Optional OrderComparator for dependency Lists and arrays. */
+	// 可选的OrderComparator，用于依赖列表和数组
 	@Nullable
 	private Comparator<Object> dependencyComparator;
 
@@ -193,12 +195,14 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	private volatile String[] frozenBeanDefinitionNames;
 
 	/** Whether bean definition metadata may be cached for all beans. */
+	// 是否可以为所有bean缓存bean定义元数据。   // metadata 元数据  definition  定义
 	private volatile boolean configurationFrozen = false;
 
 
 	/**
 	 * Create a new DefaultListableBeanFactory.
 	 */
+	// 创建一个新的DefaultListableBeanFactory。
 	public DefaultListableBeanFactory() {
 		super();
 	}
@@ -207,6 +211,14 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 * Create a new DefaultListableBeanFactory with the given parent.
 	 * @param parentBeanFactory the parent BeanFactory
 	 */
+	// 使用给定父级创建新的DefaultListableBeanFactory。
+
+	// @NotNull和@Nullable之类的annotation来声明一个方法是否是空指针安全的
+	// 现代的编译器、IDE或者工具可以读此annotation并帮你添加忘记的空指针检查，或者向你提示出不必要的乱七八糟的空指针检查。
+	// 如果可以传入NULL值，则标记为@Nullable，如果不可以，则标注为@Nonnull。
+	// 那么在我们做一些不安全严谨操作的编码操作时，这些注释会给我们一些警告。
+	// @NonNull可以标注在方法、字段、参数之上，表示对应的值不可以为空
+	// @Nullable注解可以标注在方法、字段、参数之上，表示对应的值可以为空
 	public DefaultListableBeanFactory(@Nullable BeanFactory parentBeanFactory) {
 		super(parentBeanFactory);
 	}
@@ -216,6 +228,8 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 * Specify an id for serialization purposes, allowing this BeanFactory to be
 	 * deserialized from this id back into the BeanFactory object, if needed.
 	 */
+	// 为序列化目的指定一个id，如果需要，允许将此BeanFactory从此id反序列化回BeanFactory对象。
+ 	// Specify 指定
 	public void setSerializationId(@Nullable String serializationId) {
 		if (serializationId != null) {
 			serializableFactories.put(serializationId, new WeakReference<>(this));
@@ -231,6 +245,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 * to be deserialized from this id back into the BeanFactory object, if needed.
 	 * @since 4.1.2
 	 */
+	// 如果指定返回一个用于序列化的id，如果需要，允许将此BeanFactory从此id反序列化回BeanFactory对象。
 	@Nullable
 	public String getSerializationId() {
 		return this.serializationId;
@@ -243,6 +258,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 * <p>Default is "true".
 	 * @see #registerBeanDefinition
 	 */
+	// 设置是否允许通过注册具有相同名称的其他定义来覆盖bean定义，
+	// 自动替换前者。 如果不是，则抛出异常。 这也适用于覆盖别名。
+	// <p>默认为“true”。
 	public void setAllowBeanDefinitionOverriding(boolean allowBeanDefinitionOverriding) {
 		this.allowBeanDefinitionOverriding = allowBeanDefinitionOverriding;
 	}
@@ -252,6 +270,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 * a different definition with the same name, automatically replacing the former.
 	 * @since 4.1.2
 	 */
+	// 返回是否应该允许通过注册具有相同名称的其他定义来覆盖bean定义，自动替换前者。
 	public boolean isAllowBeanDefinitionOverriding() {
 		return this.allowBeanDefinitionOverriding;
 	}
@@ -266,6 +285,10 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 * demand just to perform a type check.
 	 * @see AbstractBeanDefinition#setLazyInit
 	 */
+	// 设置是否允许工厂急切加载bean类，即使是标记为“lazy-init”的bean定义也是如此。
+	// <p>默认为“true”。 关闭此标志以禁止lazy-init bean的类加载，除非显式请求此类bean。
+	// 特别是，按类型查找将简单地忽略没有已解析的类名的bean定义，而不是仅仅为了执行类型检查而按需加载bean类。
+	// 返回是否是懒加载的类
 	public void setAllowEagerClassLoading(boolean allowEagerClassLoading) {
 		this.allowEagerClassLoading = allowEagerClassLoading;
 	}
@@ -275,6 +298,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 * even for bean definitions that are marked as "lazy-init".
 	 * @since 4.1.2
 	 */
+	// 返回是否允许工厂急切地加载bean类，即使是标记为“lazy-init”的bean定义也是如此
 	public boolean isAllowEagerClassLoading() {
 		return this.allowEagerClassLoading;
 	}
@@ -285,6 +309,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 * @see org.springframework.core.OrderComparator
 	 * @see org.springframework.core.annotation.AnnotationAwareOrderComparator
 	 */
+	// 为依赖关系列表和数组设置{@link java.util.Comparator}。
 	public void setDependencyComparator(@Nullable Comparator<Object> dependencyComparator) {
 		this.dependencyComparator = dependencyComparator;
 	}
@@ -293,6 +318,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 * Return the dependency comparator for this BeanFactory (may be {@code null}.
 	 * @since 4.0
 	 */
+	// 返回此BeanFactory的依赖性比较器（可能是{@code null}。
 	@Nullable
 	public Comparator<Object> getDependencyComparator() {
 		return this.dependencyComparator;
@@ -303,9 +329,13 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 * when deciding whether a bean definition should be considered as a
 	 * candidate for autowiring.
 	 */
+	// 在决定是否应将bean定义视为自动装配的候选者时，为此BeanFactory设置自定义autowire候选解析器。
+	// candidate 候选人 custom 习惯  resolver 分解器
 	public void setAutowireCandidateResolver(final AutowireCandidateResolver autowireCandidateResolver) {
+		// 候选策略接口不能为 null
 		Assert.notNull(autowireCandidateResolver, "AutowireCandidateResolver must not be null");
 		if (autowireCandidateResolver instanceof BeanFactoryAware) {
+			// java安全管理器SecurityManager入门
 			if (System.getSecurityManager() != null) {
 				AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
 					((BeanFactoryAware) autowireCandidateResolver).setBeanFactory(DefaultListableBeanFactory.this);

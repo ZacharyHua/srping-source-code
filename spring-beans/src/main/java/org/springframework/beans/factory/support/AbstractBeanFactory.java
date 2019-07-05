@@ -112,6 +112,7 @@ import org.springframework.util.StringValueResolver;
 public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport implements ConfigurableBeanFactory {
 
 	/** Parent bean factory, for bean inheritance support. */
+	// 父bean工厂，用于bean继承支持
 	@Nullable
 	private BeanFactory parentBeanFactory;
 
@@ -704,6 +705,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 	//---------------------------------------------------------------------
 	// Implementation of ConfigurableBeanFactory interface
+	// Implementation 接口的实现
 	//---------------------------------------------------------------------
 
 	@Override
@@ -711,6 +713,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		if (this.parentBeanFactory != null && this.parentBeanFactory != parentBeanFactory) {
 			throw new IllegalStateException("Already associated with parent BeanFactory: " + this.parentBeanFactory);
 		}
+		// 将父类的 空的 beanFactory 返回给 AbstractAutowireCapableBeanFactory。 // 能够自动注册的BeanFactory
 		this.parentBeanFactory = parentBeanFactory;
 	}
 

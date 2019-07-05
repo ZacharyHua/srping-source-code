@@ -301,6 +301,8 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 */
 	@Override
 	public int loadBeanDefinitions(Resource resource) throws BeanDefinitionStoreException {
+		// 从指定的XML文件加载bean定义。
+		// 首先对参数 Resource 使用 EncodedResource类进行封装
 		return loadBeanDefinitions(new EncodedResource(resource));
 	}
 
@@ -311,12 +313,15 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * @return the number of bean definitions found
 	 * @throws BeanDefinitionStoreException in case of loading or parsing errors
 	 */
+	// 从指定的XML文件加载bean定义。
+	// 这个方法内部是数据准备阶段，也是时序图所描述的逻辑
 	public int loadBeanDefinitions(EncodedResource encodedResource) throws BeanDefinitionStoreException {
 		Assert.notNull(encodedResource, "EncodedResource must not be null");
 		if (logger.isTraceEnabled()) {
 			logger.trace("Loading XML bean definitions from " + encodedResource);
 		}
 
+		// 通过记录属性来记录已经加载的资源
 		Set<EncodedResource> currentResources = this.resourcesCurrentlyBeingLoaded.get();
 		if (currentResources == null) {
 			currentResources = new HashSet<>(4);
@@ -327,15 +332,19 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 					"Detected cyclic loading of " + encodedResource + " - check your import definitions!");
 		}
 		try {
+			// 从encodedResource中获取已经封装的Resource对象并再次从Resource中获取inputStream
 			InputStream inputStream = encodedResource.getResource().getInputStream();
 			try {
+				// InputSource 这个类并不来自Spring，它的全路径是：org.xml.sax.InputSource
 				InputSource inputSource = new InputSource(inputStream);
 				if (encodedResource.getEncoding() != null) {
 					inputSource.setEncoding(encodedResource.getEncoding());
 				}
+				// todo  真正的进入了逻辑的核心部分
 				return doLoadBeanDefinitions(inputSource, encodedResource.getResource());
 			}
 			finally {
+				// 关不输入流
 				inputStream.close();
 			}
 		}
@@ -385,6 +394,14 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * @see #doLoadDocument
 	 * @see #registerBeanDefinitions
 	 */
+	// 实际上从指定的XML文件加载bean定义。
+
+	// todo ...
+	// 在上面冗长的代码中 不考虑异常类的代码，其实只做了三件事，这三件事每一件事都必不可少
+	// 1. 获取对XML文件的验证模式
+	// 2. 加载XMl文件，并获取对应的Document
+	// 3. 并获取对应的Document注册Bean信息
+	// 这三个步骤支撑着整个Spring容器部分的实现，尤其是第三部对配置文件的解析，逻辑非常复杂。todo .. 从获取XML文件的验证模式阅读
 	protected int doLoadBeanDefinitions(InputSource inputSource, Resource resource)
 			throws BeanDefinitionStoreException {
 
@@ -443,6 +460,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * mode, even when something other than {@link #VALIDATION_AUTO} was set.
 	 * @see #detectValidationMode
 	 */
+	// getValidationModeForResource 通过该方法来获取对应的资源的验证模式
 	protected int getValidationModeForResource(Resource resource) {
 		int validationModeToUse = getValidationMode();
 		if (validationModeToUse != VALIDATION_AUTO) {

@@ -88,6 +88,7 @@ public class BeanDefinitionHolder implements BeanMetadataElement {
 	/**
 	 * Return the wrapped BeanDefinition.
 	 */
+	// 返回包装的BeanDefinition。
 	public BeanDefinition getBeanDefinition() {
 		return this.beanDefinition;
 	}
